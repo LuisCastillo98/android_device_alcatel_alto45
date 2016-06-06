@@ -1,0 +1,194 @@
+#
+# system.prop for msm8916
+#
+
+#rild.libpath=/system/lib/libreference-ril.so
+rild.libpath=/system/vendor/lib/libril-qc-qmi-1.so
+rild.libargs=-d /dev/smd0
+persist.rild.nitz_plmn=
+persist.rild.nitz_long_ons_0=
+persist.rild.nitz_long_ons_1=
+persist.rild.nitz_long_ons_2=
+persist.rild.nitz_long_ons_3=
+persist.rild.nitz_short_ons_0=
+persist.rild.nitz_short_ons_1=
+persist.rild.nitz_short_ons_2=
+persist.rild.nitz_short_ons_3=
+ril.subscription.types=NV,RUIM
+DEVICE_PROVISIONED=1
+# Start in lte mode
+ro.telephony.default_network=9
+#[BUGFIX]-Mod-BEGIN by TSCD.(guchuan.jiang),09/02/2014, PR-778749
+ro.telephony.def_network_dsds=9,1
+#[BUGFIX]-Mod-END by TSCD.(guchuan.jiang),09/02/2014, PR-778749
+
+debug.sf.hw=0
+debug.egl.hw=1
+debug.composition.type=c2d
+persist.hwc.mdpcomp.enable=true
+debug.mdpcomp.logs=0
+#Enable translucent status bar feature
+persist.hwc.ptor.enable=true
+dalvik.vm.heapsize=36m
+dev.pm.dyn_samplingrate=1
+persist.demo.hdmirotationlock=false
+
+#ro.hdmi.enable=true
+#tunnel.decode=true
+#tunnel.audiovideo.decode=true
+#lpa.decode=false
+#lpa.use-stagefright=true
+#persist.speaker.prot.enable=false
+
+#
+# system props for the cne module
+#
+
+#[BUGFIX]-Add-BEGIN by TCTNB.Jiang Dong,11/10/2014,835869,
+#Enable NSRM feature in CNE.
+persist.cne.feature=4
+persist.cne.nsrm.bkg.evt=3955
+#[BUGFIX]-Add-END by TCTNB.Jiang Dong
+
+#for UA
+persist.sys.mmiua=
+persist.sys.uaname=
+
+#
+# system props for the dpm module
+#
+persist.dpm.feature=0
+
+#system props for the MM modules
+media.stagefright.enable-player=true
+media.stagefright.enable-http=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-fma2dp=true
+media.stagefright.enable-scan=true
+mmp.enable.3g2=true
+mm.enable.smoothstreaming=true
+mm.disable.sec_smoothstreaming=true
+media.aac_51_output_enabled=true
+#codecs:(PARSER_)AAC AC3 ASF AVI DTS 3G2 MP2TS QCP FLAC
+mm.enable.qcom_parser=168563
+
+#
+# system props for the data modules
+#
+ro.use_data_netmgrd=true
+persist.data.netmgrd.qos.enable=true
+
+#system props for time-services
+#[BUGFIX]-Delete-BEGIN by TSCD(Jun.Zou), 2014/07/11,PR-727678	[SDM][]persist_timed_enable
+#persist.timed.enable=true
+#[BUGFIX]-Delete-END by TSCD(Jun.Zou)
+
+#
+# system prop for opengles version
+#
+# 196608 is decimal for 0x30000 to report version 3
+ro.opengles.version=196608
+
+# System property for cabl
+#[PLATFORM]-Modify-BEGIN by TCTSZ.LuZhi, 2014/05/28,PR-687832 modify for lcd backlight flicker
+ro.qualcomm.cabl=0
+#[PLATFORM]-Modify-BEGIN by TCTSZ.LuZhi, 2014/05/28,PR-687832*/
+#
+# System props for telephony
+# System prop to turn on CdmaLTEPhone always
+telephony.lteOnCdmaDevice=1
+persist.omh.enabled=true
+
+#
+# System props for bluetooh
+# System prop to turn on hfp client
+bluetooth.hfp.client=1
+#[BUGFIX]-Add-BEGIN by TCTNB.(Qianbo Pan), 2014/06/19, for PR709701 disable a2dp sink
+#diable a2dp sink
+bluetooth.a2dp.sink.enabled=false
+#[BUGFIX]-Add-END by TCTNB.(Qianbo Pan)
+#Simulate sdcard on /data/media
+#
+persist.fuse_sdcard=true
+
+#
+#snapdragon value add features
+#
+ro.qc.sdk.audio.ssr=false
+##fluencetype can be fluence or fluencepro or none
+#ro.qc.sdk.audio.fluencetype=none
+persist.qc.audio.fluencetype=fluence
+persist.audio.fluence.voicecall=true
+persist.audio.fluence.voicerec=false
+persist.audio.fluence.speaker=true
+#Set for msm8916
+tunnel.audio.encode = false
+#Buffer size in kbytes for compress offload playback
+audio.offload.buffer.size.kb=32
+#Enable offload audio video playback by default
+av.offload.enable=false
+#enable voice path for PCM VoIP by default
+use.voice.path.for.pcm.voip=true
+#
+#System property for FM transmitter
+#
+ro.fm.transmitter=false
+#enable dsp gapless mode by default
+audio.offload.gapless.enabled=true
+
+#Audio voice concurrency related flags
+voice.playback.conc.disabled=true
+voice.record.conc.disabled=true
+voice.voip.conc.disabled=true
+
+# [BUGFIX]-Add-BEGIN by TCTNB.anying.huang,04/12/2014,PR-622731,Add power save.
+persist.radio.add_power_save=1
+# [BUGFIX]-Add-END by TCTNB.anying.huang
+
+#Set composition for USB
+#persist.sys.usb.config=diag,serial_smd,rmnet_bam,adb
+
+#[FEATURE]-MOD-BEGIN by TCTNB.ZhangJie,04/11/2014,646651
+#Add autoIP solution
+dhcp.autoIP=false
+#[FEATURE]-MOD-END by TCTNB.ZhangJie
+
+# [FEATURE]-Add-BEGIN by TCTNB.Binbin.Liao,04/17/2014,PR 641610,
+# property to enable legacy rat or combine rat when register in network manually.
+# legacy rat :string1: mcc_mnc, string2 :rat, need to modify in ril_command.h
+# combine rat: mcc_mnc+rat, not modify in ril_command.h
+# in framework, we use combine rat.
+persist.radio.rat_on=combine
+# [FEATURE]-Add-END by TCTNB.Mingxiang.wei
+
+#Set composition for USB
+#persist.sys.usb.config=diag,serial_smd,rmnet_bam,adb
+
+# set max starting background services
+ro.config.max_starting_bg=8
+
+#[FEATURE]-Add-BEGIN by TCTNB.long.chen,03/28/2013,408554
+#open Report button to app crash dialog
+ro.error.receiver.system.apps=com.tct.feedback
+debug.key.adb.kernel.enable=0
+#[FEATURE]-Add-END by TCTNB.long.chen
+
+# set lcd density
+ro.sf.lcd_density=220
+
+#property to enable user to access Google WFD settings
+persist.debug.wfd.enable=1
+#propery to enable VDS WFD solution
+persist.hwc.enable_vds=1
+ro.min_freq=200000
+
+# [BUGFIX]-Add-BEGIN by TCTNB.Fuqiang.Song,05/09/2014,FR-645189
+#customize SFR requirement to control MTU size,and set MTU less than 1500bytes.
+persist.data_netmgrd_mtu=1410
+# [BUGFIX]-Add-END by TCTNB.Fuqiang.Song
+
+# [BUGFIX]-Add-BEGIN by TCTNB.Guoan.Chen,05/09/2014,PR-786857
+# The DUT is disconnected from network for about 1 second during the reselection from 4G to 3G
+persist.telephony.oosisdc=false
+# [BUGFIX]-Add-END by TCTNB.Guoan.Chen

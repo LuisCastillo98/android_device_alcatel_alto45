@@ -1,0 +1,265 @@
+# Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
+#     * Neither the name of The Linux Foundation nor the names of its
+#       contributors may be used to endorse or promote products derived
+#       from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#
+
+import init.qti.carrier.rc
+
+on early-init
+    mkdir /firmware 0771 system system
+    mkdir /system 0777 root root
+    symlink /data/tombstones /tombstones
+    mkdir /tctpersist 0771 system system
+# import cne init file
+on post-fs
+    export LD_PRELOAD /vendor/lib/libNimsWrap.so
+
+on fs
+    mount_all fstab.qcom
+
+    # Keeping following partitions outside fstab file. As user may not have
+    # these partition flashed on the device. Failure to mount any partition in fstab file
+    # results in failure to launch late-start class.
+
+    wait /dev/block/bootdevice/by-name/cache
+    mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid nodev barrier=1
+
+    wait /dev/block/bootdevice/by-name/persist
+    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
+    mkdir /persist/data/ 0775 system system
+
+#[FEATURE]-ADD-BEGIN by TCTNB.XLJ, 2014/04/23, FR-642133, mount tctpersist partition
+    wait /dev/block/bootdevice/by-name/tctpersist
+    mount ext4 /dev/block/bootdevice/by-name/tctpersist /tctpersist nosuid nodev barrier=1
+
+    wait /dev/block/bootdevice/by-name/hdcp
+    mount ext4 /dev/block/bootdevice/by-name/hdcp /persist/data nosuid nodev barrier=1
+#[FEATURE]-ADD-END by TCTNB.XLJ
+
+    wait /dev/block/bootdevice/by-name/modem
+    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
+    #write /sys/kernel/boot_adsp/boot 1
+
+#[FEATURE]-ADD by TCTNB.XLJ, 2014/04/23, FR-642133, chown for tctpersist
+on post-fs
+    # We chown/chmod /tctpersist again so because mount is run as root + defaults
+    chown system system /tctpersist
+    chmod 0771 /tctpersist
+
+    chown system system /persist/data
+
+    chmod 0775 /persist/data
+#[FEATURE]-ADD-END by TCTNB.XLJ
+
+#[FEATURE]-Add-BEGIN by TSCD.Xiaoxia.Zhao,05/09/2014,FR-644944,
+#Sales tracker requirement in APAC products
+on post-fs
+    mkdir /persist/salestracker 0771 system system
+# [FEATURE]-Add-END by TSCD.Xiaoxia.Zhao
+
+on post-fs-data
+    mkdir /data/tombstones 0771 system system
+    mkdir /tombstones/modem 0771 system system
+    mkdir /tombstones/lpass 0771 system system
+    mkdir /tombstones/wcnss 0771 system system
+    mkdir /tombstones/dsps 0771 system system
+    mkdir /data/param 0771 system system
+
+#start camera server as daemon
+service qcamerasvr /system/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+on property:ro.kernel.nfc.enable=true
+    insmod /system/lib/modules/pn547.ko
+    wait /dev/pn544
+    #Add-BEGIN by TCTNB.(LongNa), 2013/10/25,FR-520425,NFC
+    setprop ro.nfc.port "I2C"
+    chown nfc nfc /dev/pn544
+    mkdir /data/nfc
+    chmod 0777 /data/nfc
+    #Add-END by TCTNB.(LongNa), 2013/10/25,FR-520425,NFC
+
+on init
+   write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
+
+# Allow usb charging to be disabled peristently
+on property:persist.usb.chgdisabled=1
+    write /sys/class/power_supply/battery/charging_enabled 0
+
+on property:persist.usb.chgdisabled=0
+    write /sys/class/power_supply/battery/charging_enabled 1
+
+service qrngd /system/bin/qrngd -f
+   class main
+   user root
+   group root
+
+service qrngp /system/bin/qrngp -f
+   class main
+   user root
+   group root
+   oneshot
+   disabled
+
+on property:sys.boot_completed=1
+   start qrngp
+
+service qseecomd /system/bin/qseecomd
+   class core
+   user root
+   group root
+
+service mpdecision /system/bin/mpdecision --avg_comp
+   user root
+   disabled
+
+service thermal-engine /system/bin/thermal-engine
+   class main
+   user root
+   group root
+
+service time_daemon /system/bin/time_daemon
+   class late_start
+   user root
+   group root
+
+service audiod /system/bin/audiod
+   class late_start
+   user system
+   group system
+
+on charger
+   wait /dev/block/bootdevice/by-name/system
+   mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
+   chown root system /sys/class/power_supply/bms/current_now
+   chown root system /sys/class/power_supply/bms/voltage_ocv
+   chmod 0664 /sys/class/power_supply/bms/current_now
+   chmod 0664 /sys/class/power_supply/bms/voltage_ocv
+   chown radio system /sys/power/wake_lock
+   chown radio system /sys/power/wake_unlock
+   chmod 0660 /sys/power/wake_lock
+   chmod 0660 /sys/power/wake_unlock
+   chown system system /sys/power/state
+   chmod 0660 /sys/power/state
+   start vm_bms
+
+/*[PLATFORM]-Add-BEGIN by TCTNB.WD, FR-771974, 2014/08/22,  system consumption when power off charging*/
+    start mpdecision
+
+    write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu1/power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu2/power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu3/power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/power_collapse/idle_enabled 1
+/*[PLATFORM]-Add-END by TCTNB.WD*/
+   class_start charger
+
+on boot
+    insmod /system/lib/modules/adsprpc.ko
+    #[FEATURE]-Add by TSCD.renyi.hu,05/23/2014,FR-641260, double click unlock
+    chown system system /sys/class/tp_gesture/tp_device/tp_gesture_id
+    #[FEATURE]-Add by TSCD.qinyu,05/21/2014,FR-624445, LED Torch
+    chown system system /sys/class/leds/torch-light/brightness
+    #Add-BEGIN 2014/05/20,FR-622522, Flash LED Test
+    chown system system /sys/class/leds/flashlight/brightness
+    #add_END
+
+    #Add-BEGIN by TCTNB.(Deqing.zhu), 2014/06/20,FR-678636, P-Sensor Test
+    chown system system /sys/class/apds_cal/ps_device/ps_fac_cal
+    #Add-END by TCTNB.(Deqing.zhu)
+
+    #Add-BEGIN by TCTNB.(Jie.Yang), 2014/09/12, PR-787919
+    chown system system /sys/class/apds_cal/ps_device/ps_phonecal_switch
+    #Add-END by TCTNB.(Jie.Yang)
+
+    #Add-BEGIN by TCTNB.(Deqing.zhu), 2014/06/20,FR-678636, P-Sensor Test
+    chown system system /sys/class/apds_cal/ps_device/ps_fac_param
+    #Add-END by TCTNB.(Deqing.zhu)
+    #Add-begin by TCTNB.chenli.tao 742117   2014723
+    #Add-begin by TCTNB.chenli.tao 779334   2014830
+    chmod 0664  /sys/class/leds/led_G/blink
+    chmod 0664  /sys/class/leds/led_G/brightness
+    chown system system /sys/class/leds/led_G/blink
+    chown system system /sys/class/leds/led_G/brightness
+    #Add-end by TCTNB.chenli.tao 779334   2014830
+    #Add-end by TCTNB.chenli.tao 742117   2014723
+service ppd /system/bin/mm-pp-daemon
+    class late_start
+    disabled
+    user system
+    socket pps stream 0660 system system
+    group system graphics
+
+on property:init.svc.surfaceflinger=stopped
+    stop ppd
+
+on property:init.svc.surfaceflinger=running
+    start ppd
+
+service wcnss-service /system/bin/wcnss_service
+    class main
+    user system
+    group system wifi radio
+    oneshot
+
+service imsqmidaemon /system/bin/imsqmidaemon
+    class main
+    user system
+    socket ims_qmid stream 0660 system radio
+    group ims radio net_raw log qcom_diag
+
+service imsdatadaemon /system/bin/imsdatadaemon
+    class main
+    user system
+    socket ims_datad stream 0660 system radio
+    group system ims wifi radio inet net_raw log qcom_diag net_admin
+    disabled
+
+on property:sys.ims.QMI_DAEMON_STATUS=1
+    start imsdatadaemon
+
+service ims_rtp_daemon /system/bin/ims_rtp_daemon
+   class main
+   user system
+   socket ims_rtpd stream 0660 system ims
+   group ims net_raw diag qcom_diag log
+   disabled
+
+on property:sys.ims.DATA_DAEMON_STATUS=1
+    start ims_rtp_daemon
+
+on property:ro.build.type=user
+    write /proc/sys/kernel/printk "6 6 1 7"
