@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111714">
+<title>RAÍZ INSIGHT · Miga & Origen</title>
+<style>
+:root{
+  --ink:#171914;--muted:#777a71;--line:#e7e3d9;--paper:#f5f1e9;--card:#fffdf8;
+  --espresso:#2c211b;--moss:#41543f;--sage:#71836d;--terracotta:#b46f4c;--sand:#dccbb5;
+  --green:#6b8064;--gold:#c9a86a;--danger:#b65a4b;--shadow:0 18px 50px rgba(46,35,28,.10)
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,select{font:inherit} button{cursor:pointer}
+.shell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr)}
+.sidebar{background:#151a16;color:#f7f2e8;padding:26px 20px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:4}
+.brand{display:flex;gap:12px;align-items:center}.mark{width:42px;height:42px;border:1px solid #4a554b;border-radius:14px;display:grid;place-items:center;font-weight:900;background:#202821}.brand strong{display:block;letter-spacing:.06em}.brand small{display:block;color:#9fa89d;margin-top:2px}
+.side-label{font-size:11px;text-transform:uppercase;letter-spacing:.17em;color:#808a80;margin:30px 10px 10px}
+.nav{display:grid;gap:6px}.nav button{width:100%;text-align:left;border:0;color:#aeb6ad;background:transparent;padding:12px 13px;border-radius:12px;display:flex;align-items:center;gap:10px}
+.nav button.active,.nav button:hover{background:#222a23;color:white}.dot{width:8px;height:8px;border-radius:50%;background:#687568}.nav .active .dot{background:#d4b378}
+.sidebar-bottom{margin-top:auto;border-top:1px solid #303a31;padding-top:16px;font-size:12px;color:#8f998f;line-height:1.6}
+.main{min-width:0;padding:24px 28px 50px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.client{display:flex;align-items:center;gap:12px}.client-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#30251e;color:#fff;font-family:Georgia,serif;font-weight:700}
+.client h1{font-size:18px;margin:0}.client p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{background:var(--card);border:1px solid var(--line);padding:9px 12px;border-radius:999px;font-size:12px;color:#575b53}.badge.live{background:#e9efe6;color:#3b5638;border-color:#dbe5d6}
+.hero{position:relative;min-height:280px;border-radius:26px;overflow:hidden;background:#242821;box-shadow:var(--shadow);display:grid;grid-template-columns:1.2fr .8fr;align-items:end;margin-bottom:18px}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,18,14,.92) 0%,rgba(15,19,16,.76) 44%,rgba(15,19,16,.28) 70%,rgba(15,19,16,.10) 100%),url("https://images.unsplash.com/photo-1775179424139-bd65d79c132e?auto=format&fit=crop&w=1800&q=86") center/cover}
+.hero-copy,.hero-score{position:relative;z-index:1;padding:30px;color:white}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#d7cab4;font-weight:700}.hero h2{font-size:34px;line-height:1.05;margin:8px 0 10px;max-width:630px}.hero p{margin:0;color:#d7ddd6;max-width:620px;line-height:1.6;font-size:14px}
+.hero-score{align-self:stretch;display:flex;justify-content:flex-end;align-items:flex-end}.score-card{width:min(300px,100%);background:rgba(253,251,244,.94);color:var(--ink);backdrop-filter:blur(8px);padding:18px;border-radius:20px;border:1px solid rgba(255,255,255,.45)}
+.score-head{display:flex;align-items:flex-end;justify-content:space-between}.score-head strong{font-size:34px}.score-head span{font-size:12px;color:var(--muted)}.scorebar{height:9px;background:#e5e0d7;border-radius:99px;overflow:hidden;margin:12px 0}.scorebar i{display:block;height:100%;width:74%;background:linear-gradient(90deg,var(--moss),#879778);border-radius:99px}.score-card p{color:#666b63;font-size:12px}
+.platforms{display:flex;gap:8px;overflow:auto;padding-bottom:2px;margin:4px 0 16px}.platforms button{border:1px solid var(--line);background:var(--card);color:#666a62;border-radius:999px;padding:10px 14px;white-space:nowrap}.platforms button.active{background:var(--espresso);border-color:var(--espresso);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.kpi .value{font-size:27px;font-weight:800;margin-top:8px}.kpi .meta{font-size:11px;color:var(--muted);margin-top:4px}.trend{color:#476345;font-weight:700}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:16px;margin-bottom:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.panel h3{font-size:16px;margin:0}.panel .sub{font-size:12px;color:var(--muted);margin-top:5px}.selector{border:1px solid var(--line);background:#fbf8f1;padding:8px 10px;border-radius:10px;color:#4b5049}
+.chart{height:230px;display:flex;align-items:end;gap:16px;padding:18px 4px 2px;border-bottom:1px solid var(--line);position:relative}.barwrap{flex:1;text-align:center;min-width:0}.bar{height:calc(var(--v)*1.55px);max-height:190px;min-height:6px;background:linear-gradient(180deg,#819079,#4e634d);border-radius:12px 12px 4px 4px;position:relative;transition:.25s}.bar b{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap}.barwrap span{display:block;font-size:10px;color:var(--muted);margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai{background:#1c241e;color:#fff;border-color:#263229}.ai .eyebrow{color:#9eaa9c}.ai h3{font-size:22px;margin:8px 0 10px}.ai p{color:#c9d1c8;line-height:1.6;font-size:13px}.insight{margin-top:12px;background:#263128;border:1px solid #354139;border-radius:14px;padding:12px;font-size:12px;color:#e6ebe4}.insight strong{color:#e0c895}.ai .mini{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.ai .mini span{font-size:10px;border:1px solid #3b493e;padding:7px 9px;border-radius:999px;color:#bdc8bc}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:22px 0 12px}.section-title h3{font-size:19px;margin:0}.section-title p{font-size:12px;color:var(--muted);margin:4px 0 0}.section-title .hint{font-size:11px;color:var(--muted)}
+.posts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:16px}.post{border:1px solid var(--line);background:var(--card);border-radius:20px;overflow:hidden;text-align:left;padding:0;box-shadow:0 8px 25px rgba(51,40,31,.05);transition:.2s;min-width:0}.post:hover{transform:translateY(-3px);box-shadow:var(--shadow)}.post.selected{outline:2px solid #6f816b;outline-offset:2px}
+.post-top{display:flex;align-items:center;gap:8px;padding:10px 11px}.ava{width:28px;height:28px;border-radius:50%;background:#33271f;color:#fff;display:grid;place-items:center;font:700 10px Georgia}.post-top strong{font-size:11px;display:block}.post-top small{font-size:9px;color:var(--muted)}.post-img{aspect-ratio:1/1;position:relative;overflow:hidden;background:#ddd}.post-img img{width:100%;height:100%;object-fit:cover;display:block}.post-img .type{position:absolute;top:9px;right:9px;background:rgba(19,24,20,.78);color:white;font-size:9px;padding:6px 7px;border-radius:999px;backdrop-filter:blur(6px)}
+.post-actions{padding:10px 11px}.icons{display:flex;gap:12px;align-items:center;font-size:16px}.icons .save{margin-left:auto}.likes{font-size:11px;font-weight:700;margin-top:7px}.caption{font-size:10px;line-height:1.45;margin-top:6px;color:#4e534c}.comments{font-size:9px;color:#91958c;margin-top:6px}
+.detail{display:grid;grid-template-columns:.95fr 1.05fr;gap:16px;margin-bottom:16px}.detail-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}.detail-card h4{font-size:16px;margin:0 0 6px}.detail-card p{font-size:12px;color:var(--muted);line-height:1.65;margin:0}.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.metric{background:#f5f1e9;border-radius:12px;padding:10px;text-align:center}.metric strong{display:block;font-size:15px}.metric span{font-size:9px;color:var(--muted)}
+.rec{background:linear-gradient(135deg,#efe7d8,#f8f4ec)}.rec .pill{display:inline-block;background:#dbe3d6;color:#425541;font-size:9px;font-weight:700;padding:6px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.08em}.rec h4{font-size:20px;margin:10px 0 8px}.cta{margin-top:13px;background:#fffdf8;border:1px solid #e4dac9;padding:11px;border-radius:12px;font-size:11px}.tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.tag{border:1px solid #ddd2c2;border-radius:999px;padding:6px 8px;font-size:9px;color:#6f675d}
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:16px}.goal-list{display:grid;gap:13px;margin-top:14px}.goal-line{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;font-size:11px}.track{grid-column:1/-1;height:8px;border-radius:999px;background:#ebe5db;overflow:hidden}.track i{display:block;height:100%;background:linear-gradient(90deg,#556950,#879979);border-radius:999px}
+.funnel{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0;flex-wrap:wrap}.funnel .step{background:#f4efe6;border:1px solid var(--line);padding:12px 16px;border-radius:14px;text-align:center;min-width:120px}.step strong{display:block;font-size:21px}.step span{font-size:10px;color:var(--muted)}.arrow{color:#9c958a}.footer{margin-top:18px;padding:18px 4px;color:#8a8d85;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.other{display:none}.other.active{display:block}
+.modal{position:fixed;inset:0;background:rgba(18,22,18,.62);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.open{display:flex}.modal-box{max-width:600px;width:100%;background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.modal-box h3{margin-top:0}.modal-box p{font-size:13px;line-height:1.7;color:#555b53}.close{border:0;background:#efe9dd;border-radius:10px;padding:9px 12px}
+.report-btn{border:0;background:var(--espresso);color:white;border-radius:12px;padding:10px 13px}
+@media(max-width:1080px){.posts{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.detail,.goals{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-score{padding-top:0}.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto;padding:16px}.nav,.side-label,.sidebar-bottom{display:none}.main{padding:14px}.top{align-items:flex-start}.badges .badge:first-child{display:none}.hero{min-height:380px}.hero-copy{padding:24px 20px}.hero h2{font-size:29px}.hero-score{padding:0 20px 20px}.score-card{width:100%}.posts{grid-template-columns:1fr 1fr}.kpis{gap:8px}.kpi{padding:13px}.kpi .value{font-size:22px}.metrics-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.posts{grid-template-columns:1fr}.top{display:block}.badges{margin-top:10px}.hero h2{font-size:26px}.kpis{grid-template-columns:1fr 1fr}.main{padding:10px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">R°</div><div><strong>RAÍZ INSIGHT</strong><small>Social Intelligence</small></div></div>
+    <div class="side-label">Workspace</div>
+    <div class="nav">
+      <button class="active"><span class="dot"></span>Resumen</button>
+      <button><span class="dot"></span>Contenido</button>
+      <button><span class="dot"></span>Audiencia</button>
+      <button><span class="dot"></span>Conversión</button>
+      <button><span class="dot"></span>Recomendaciones</button>
+    </div>
+    <div class="side-label">Cuenta</div>
+    <div class="nav"><button><span class="dot"></span>Miga & Origen</button></div>
+    <div class="sidebar-bottom">Demo académica · Pitch de Community Management<br>Datos ficticios del brief.</div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div class="client"><div class="client-avatar">M&O</div><div><h1>Miga & Origen</h1><p>Dashboard ejecutivo · últimos 30 días</p></div></div>
+      <div class="badges"><span class="badge">22 Sep 2026</span><span class="badge live">● Demo conectada</span><button class="report-btn" id="reportBtn">Resumen ejecutivo</button></div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">RAÍZ DIGITAL · CLIENT PORTAL</div>
+        <h2>De números aislados a decisiones que hacen crecer la marca.</h2>
+        <p>RAÍZ INSIGHT reúne publicaciones, comportamiento de la comunidad, tráfico, conversión y atención para decirnos qué funcionó, por qué y qué publicar después.</p>
+      </div>
+      <div class="hero-score">
+        <div class="score-card"><div class="score-head"><div><div class="eyebrow" style="color:#7d806f">Índice general</div><strong>74<span style="font-size:15px;color:#8b8e85">/100</span></strong></div><span>En crecimiento</span></div><div class="scorebar"><i></i></div><p>Buena capacidad de generar interacción. La oportunidad está en convertir más alcance en pedidos y reducir el tiempo de respuesta.</p></div>
+      </div>
+    </section>
+
+    <div class="platforms" id="platforms">
+      <button class="active" data-platform="instagram">Instagram</button>
+      <button data-platform="whatsapp">WhatsApp</button>
+      <button data-platform="facebook">Facebook</button>
+      <button data-platform="tiktok">TikTok</button>
+    </div>
+
+    <section id="instagramView">
+      <div class="kpis">
+        <div class="kpi"><div class="label">Mayor alcance</div><div class="value">18.000</div><div class="meta"><span class="trend">Meme</span> · descubrimiento</div></div>
+        <div class="kpi"><div class="label">Mayor engagement</div><div class="value">12%</div><div class="meta"><span class="trend">Meme</span> · conversación</div></div>
+        <div class="kpi"><div class="label">Más ventas</div><div class="value">36</div><div class="meta"><span class="trend">Carrusel</span> · desayunos</div></div>
+        <div class="kpi"><div class="label">Mejor conversión</div><div class="value">15%</div><div class="meta"><span class="trend">Carrusel + testimonio</span></div></div>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-head"><div><h3>Rendimiento por publicación</h3><div class="sub">Compara cada contenido según su objetivo.</div></div>
+            <select class="selector" id="metricSelect"><option value="reach">Alcance</option><option value="engagement">Engagement</option><option value="ctr">CTR</option><option value="conversion">Conversión</option></select>
+          </div>
+          <div class="chart" id="chart"></div>
+        </div>
+        <div class="panel ai">
+          <div class="eyebrow">Análisis automático</div>
+          <h3>El alcance y la venta vienen de contenidos distintos.</h3>
+          <p>El meme lidera visibilidad e interacción, pero el carrusel de desayunos y el testimonio convierten mejor. No debemos pedirle a una sola pieza que haga todo.</p>
+          <div class="insight"><strong>Decisión:</strong> atraer con contenido compartible, construir confianza con historias reales y cerrar con piezas de producto orientadas a WhatsApp.</div>
+          <div class="mini"><span>↑ Repetir carruseles</span><span>↑ Escalar testimonios</span><span>→ Mantener humor</span></div>
+        </div>
+      </div>
+
+      <div class="section-title"><div><h3>Publicaciones analizadas</h3><p>La publicación se ve como la vería el cliente, no como una fila de Excel.</p></div><div class="hint">Toca una tarjeta para analizarla</div></div>
+      <div class="posts" id="posts"></div>
+
+      <div class="detail">
+        <div class="detail-card" id="detailCard">
+          <h4 id="detailTitle">Carrusel · Desayunos</h4>
+          <p id="detailText">La pieza comercial más fuerte: convierte intención en pedidos. Conviene repetir el formato con nuevas situaciones de consumo.</p>
+          <div class="metrics-row" id="detailMetrics"></div>
+        </div>
+        <div class="detail-card rec">
+          <span class="pill">Siguiente contenido recomendado</span>
+          <h4 id="recTitle">3 desayunos para acompañar tu próxima mañana de trabajo</h4>
+          <p id="recText">Combina el formato que ya convirtió mejor con el posicionamiento de Miga & Origen como lugar para trabajar y hacer una pausa.</p>
+          <div class="cta"><strong>CTA sugerido:</strong> <span id="recCta">Escríbenos “PAUSA” por WhatsApp y te enviamos el menú.</span></div>
+          <div class="tagrow"><span class="tag">KPI · clics</span><span class="tag">KPI · pedidos</span><span class="tag">A/B · portada</span></div>
+        </div>
+      </div>
+
+      <div class="goals">
+        <div class="panel">
+          <div class="panel-head"><div><h3>Objetivos a 60 días</h3><div class="sub">Metas del brief convertidas en seguimiento.</div></div></div>
+          <div class="goal-list">
+            <div class="goal-line"><span>Alcance · 21.000 → 28.350</span><strong>+35%</strong><div class="track"><i style="width:66%"></i></div></div>
+            <div class="goal-line"><span>Instagram · 3.200 → 3.584</span><strong>+12%</strong><div class="track"><i style="width:58%"></i></div></div>
+            <div class="goal-line"><span>Pedidos WhatsApp · 24 → ≥29</span><strong>+20%</strong><div class="track"><i style="width:52%"></i></div></div>
+            <div class="goal-line"><span>Tiempo de respuesta · 9 h → &lt;2 h</span><strong>Prioridad</strong><div class="track"><i style="width:34%"></i></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h3>Embudo hacia WhatsApp</h3><div class="sub">El interés solo vale si llega a una conversación y una compra.</div></div></div>
+          <div class="funnel"><div class="step"><strong>210</strong><span>clics</span></div><div class="arrow">→</div><div class="step"><strong>96</strong><span>conversaciones</span></div><div class="arrow">→</div><div class="step"><strong>24</strong><span>pedidos</span></div></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div class="metric"><strong>45,7%</strong><span>clic → conversación</span></div><div class="metric"><strong>25%</strong><span>conversación → pedido</span></div><div class="metric"><strong>11,4%</strong><span>clic → pedido</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="otherView" class="other"></section>
+
+    <footer class="footer"><span>RAÍZ INSIGHT · Demo de producto para Miga & Origen</span><span>Datos del caso ficticio + desglose de interacciones simulado para fines visuales.</span></footer>
+  </main>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><div class="eyebrow" style="color:#7d806f">Resumen ejecutivo</div><h3>Qué haríamos el próximo mes</h3></div><button class="close" id="closeModal">Cerrar</button></div><p><strong>Hallazgo:</strong> el contenido de humor maximiza alcance e interacción, mientras carruseles comerciales y testimonios muestran mayor capacidad de conversión.</p><p><strong>Decisión:</strong> mantener una mezcla deliberada de formatos: contenido compartible para atraer, historias reales para construir confianza y piezas de producto con CTA a WhatsApp para cerrar.</p><p><strong>Prioridad operativa:</strong> reducir el tiempo promedio de respuesta de 9 horas a menos de 2, porque mejorar el contenido sin mejorar la atención deja conversiones sobre la mesa.</p></div></div>
+
+<script>
+var posts=[
+{id:'reel',title:'Reel · Preparación del café',type:'REEL',objective:'Reconocimiento',image:'https://images.unsplash.com/photo-1783936296983-17a6e99fb862?auto=format&fit=crop&w=1000&q=86',reach:12000,impressions:15000,interactions:960,clicks:120,sales:12,likes:700,comments:80,shares:110,saves:70,caption:'Tu pausa empieza mucho antes de la primera taza. ☕ Conoce el origen detrás de cada preparación.',detail:'Buen contenido de descubrimiento. Tiene alcance e interacción sólidos, pero el siguiente experimento debe mejorar el CTA hacia WhatsApp.',rec:'Del origen a tu mesa: el café de la semana',recText:'Mantener el Reel, pero terminar con una acción concreta para convertir curiosidad en visita o conversación.',cta:'Escríbenos “CAFÉ” y te contamos cuál estamos sirviendo esta semana.'},
+{id:'breakfast',title:'Carrusel · Desayunos',type:'CARRUSEL',objective:'Ventas',image:'https://images.unsplash.com/photo-1769138886135-93d1dd8ac06a?auto=format&fit=crop&w=1000&q=86',reach:8000,impressions:10000,interactions:720,clicks:240,sales:36,likes:510,comments:35,shares:65,saves:110,caption:'Tres formas de empezar la mañana distinto. Guarda tu favorita y pide el menú por WhatsApp.',detail:'La pieza comercial más fuerte: convierte intención en pedidos. Conviene repetir el formato con nuevas situaciones de consumo.',rec:'3 desayunos para acompañar tu próxima mañana de trabajo',recText:'Combina el formato que ya convirtió mejor con el posicionamiento de Miga & Origen como lugar para trabajar y hacer una pausa.',cta:'Escríbenos “PAUSA” por WhatsApp y te enviamos el menú.'},
+{id:'meme',title:'Meme · Necesitar café',type:'IMAGEN',objective:'Interacción',image:'https://images.unsplash.com/photo-1783936296983-17a6e99fb862?auto=format&fit=crop&w=1000&q=86',reach:18000,impressions:22000,interactions:2160,clicks:45,sales:2,likes:1850,comments:160,shares:130,saves:20,caption:'Yo antes del primer café: “hoy sí voy a ser productivo”. Yo cinco minutos después: ahora sí. 😅',detail:'Excelente para alcance e interacción. Su trabajo es atraer y conversar, no vender directamente; por eso no debemos juzgarlo por ventas.',rec:'POV: la reunión era a las 8 y tú eras persona después del café',recText:'Repetir humor basado en rutinas de trabajo y estudio, manteniendo el producto presente sin forzar una venta.',cta:'Etiqueta a esa persona que no existe antes del primer café.'},
+{id:'testimonial',title:'Testimonio · Cliente',type:'TESTIMONIO',objective:'Confianza',image:'https://images.unsplash.com/photo-1758519291709-79701a6feeb3?auto=format&fit=crop&w=1000&q=86',reach:6000,impressions:7500,interactions:420,clicks:180,sales:27,likes:300,comments:35,shares:40,saves:45,caption:'“Vengo porque puedo trabajar tranquilo, comer bien y sentir que hice una pausa de verdad.” — Cliente Miga & Origen',detail:'La prueba social convierte muy bien incluso con poco alcance. Es una señal fuerte para convertir testimonios en una serie recurrente.',rec:'Mi pausa en Miga & Origen · historias reales',recText:'Crear una serie semanal con clientes trabajando, reuniéndose o compartiendo en el lugar.',cta:'¿Cómo sería tu pausa ideal? Cuéntanos o ven a vivirla.'}
+];
+posts.forEach(function(p){p.engagement=p.interactions/p.reach*100;p.ctr=p.clicks/p.impressions*100;p.conversion=p.sales/p.clicks*100});
+var selected='breakfast';
+function fmt(n){return new Intl.NumberFormat('es-CO').format(Math.round(n))}
+function pct(n){return n.toLocaleString('es-CO',{maximumFractionDigits:1})+'%'}
+function postHtml(p){
+return '<button class="post '+(p.id===selected?'selected':'')+'" data-id="'+p.id+'"><div class="post-top"><div class="ava">M&O</div><div><strong>miga.origen</strong><small>Contenido ficticio · demo</small></div></div><div class="post-img"><img src="'+p.image+'" alt="'+p.title+'"><span class="type">'+p.type+'</span></div><div class="post-actions"><div class="icons"><span>♡</span><span>○</span><span>↗</span><span class="save">◇</span></div><div class="likes">'+fmt(p.likes)+' Me gusta</div><div class="caption"><strong>miga.origen</strong> '+p.caption+'</div><div class="comments">Ver '+fmt(p.comments)+' comentarios · '+fmt(p.shares)+' compartidos · '+fmt(p.saves)+' guardados</div></div></button>'
+}
+function renderPosts(){document.getElementById('posts').innerHTML=posts.map(postHtml).join('');document.querySelectorAll('.post').forEach(function(el){el.addEventListener('click',function(){selected=this.dataset.id;renderPosts();renderDetail()})})}
+function renderDetail(){var p=posts.find(function(x){return x.id===selected});document.getElementById('detailTitle').textContent=p.title;document.getElementById('detailText').textContent=p.detail;document.getElementById('detailMetrics').innerHTML='<div class="metric"><strong>'+fmt(p.reach)+'</strong><span>alcance</span></div><div class="metric"><strong>'+pct(p.engagement)+'</strong><span>engagement</span></div><div class="metric"><strong>'+pct(p.ctr)+'</strong><span>CTR</span></div><div class="metric"><strong>'+pct(p.conversion)+'</strong><span>conversión</span></div>';document.getElementById('recTitle').textContent=p.rec;document.getElementById('recText').textContent=p.recText;document.getElementById('recCta').textContent=p.cta}
+function renderChart(){var metric=document.getElementById('metricSelect').value;var max=Math.max.apply(null,posts.map(function(p){return p[metric]}));document.getElementById('chart').innerHTML=posts.map(function(p){var raw=p[metric],v=raw/max*100,label=metric==='reach'?fmt(raw):pct(raw),short=p.id==='breakfast'?'Desayunos':p.id==='testimonial'?'Testimonio':p.id==='meme'?'Meme':'Reel café';return '<div class="barwrap"><div class="bar" style="--v:'+v+'"><b>'+label+'</b></div><span>'+short+'</span></div>'}).join('')}
+document.getElementById('metricSelect').addEventListener('change',renderChart);
+document.getElementById('reportBtn').addEventListener('click',function(){document.getElementById('modal').classList.add('open')});
+document.getElementById('closeModal').addEventListener('click',function(){document.getElementById('modal').classList.remove('open')});
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+document.querySelectorAll('#platforms button').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('#platforms button').forEach(function(b){b.classList.remove('active')});this.classList.add('active');var p=this.dataset.platform;var insta=document.getElementById('instagramView'),other=document.getElementById('otherView');if(p==='instagram'){insta.style.display='block';other.classList.remove('active');return}insta.style.display='none';other.classList.add('active');if(p==='whatsapp'){other.innerHTML='<div class="kpis"><div class="kpi"><div class="label">Clics a WhatsApp</div><div class="value">210</div><div class="meta">Últimos 30 días</div></div><div class="kpi"><div class="label">Conversaciones</div><div class="value">96</div><div class="meta">45,7% de los clics</div></div><div class="kpi"><div class="label">Pedidos</div><div class="value">24</div><div class="meta">25% de conversaciones</div></div><div class="kpi"><div class="label">Respuesta promedio</div><div class="value">9 h</div><div class="meta"><span class="trend">Meta &lt; 2 h</span></div></div></div><div class="panel"><div class="eyebrow" style="color:#7d806f">Embudo comercial</div><h3 style="font-size:24px;margin-top:8px">La mayor oportunidad está después del clic.</h3><p class="sub" style="max-width:720px;line-height:1.7">El contenido ya genera intención: 210 personas llegaron a WhatsApp. El siguiente salto es operativo: responder más rápido, etiquetar conversaciones y medir qué publicaciones terminan en pedido.</p><div class="funnel"><div class="step"><strong>210</strong><span>clics</span></div><div class="arrow">→</div><div class="step"><strong>96</strong><span>conversaciones</span></div><div class="arrow">→</div><div class="step"><strong>24</strong><span>pedidos</span></div></div></div>'}else{var label=p==='facebook'?'Facebook':'TikTok',followers=p==='facebook'?'1.800':'420';other.innerHTML='<div class="kpis"><div class="kpi"><div class="label">Seguidores actuales</div><div class="value">'+followers+'</div><div class="meta">'+label+'</div></div><div class="kpi"><div class="label">Publicaciones</div><div class="value">—</div><div class="meta">API por conectar</div></div><div class="kpi"><div class="label">Interacciones</div><div class="value">—</div><div class="meta">API por conectar</div></div><div class="kpi"><div class="label">Estado</div><div class="value" style="font-size:20px">Preparado</div><div class="meta">Módulo demo</div></div></div><div class="panel"><div class="eyebrow" style="color:#7d806f">'+label+'</div><h3 style="font-size:24px;margin-top:8px">Conexión preparada sin inventar datos.</h3><p class="sub" style="max-width:760px;line-height:1.7">En una versión real, RAÍZ INSIGHT leería automáticamente publicaciones, alcance, reproducciones, comentarios, compartidos y evolución del canal mediante las integraciones disponibles. En esta demo solo mostramos los datos que proporciona el brief.</p></div>'}})});
+renderPosts();renderDetail();renderChart();
+</script>
+</body></html>
